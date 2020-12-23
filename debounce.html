@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" id="input" />
+  </body>
+  <script>
+    function debounce(fn, delay) {
+      let timer = null
+      return function () {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          fn.apply(this, arguments)
+        }, delay)
+      }
+    }
+
+    // 输入框停止输入后，半秒内请求接口
+    const inputEle = document.getElementById('input')
+    inputEle.addEventListener(
+      'input',
+      debounce(() => {
+        console.log('input change')
+      }, 500)
+    )
+  </script>
+
+  <script></script>
+</html>

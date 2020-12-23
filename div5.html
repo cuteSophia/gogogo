@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    for (var i = 0; i < 5; i++) {
+      ;(function (j) {
+        let div = document.createElement('div')
+        div.innerHTML = j + '<br />'
+        document.body.appendChild(div)
+        div.addEventListener('click', function () {
+          console.log(j)
+        })
+      })(i)
+    }
+
+    for (let k = 5; k < 10; k++) {
+      let div = document.createElement('div')
+      if (k === 5) {
+        div.style.marginTop = '50px'
+      }
+      div.innerHTML = k + '<br />'
+      document.body.appendChild(div)
+      div.addEventListener('click', function () {
+        console.log(k)
+      })
+    }
+  </script>
+</html>

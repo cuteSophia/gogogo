@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <!--<script>
+    // 变量提升：因为 var，js 在编译阶段将 a 赋值了 undefined
+    // js 在运行阶段时条件语句为 false，所以 a 为 undefined
+    if (!('a' in window)) {
+      var a = 1
+    }
+    console.log(a) // undefined
+
+    if (false) {
+      var b = 2
+    }
+    console.log(b) // undefined
+
+    console.log(c) // Uncaught ReferenceError: c is not defined
+    function fn() {
+      var c = 3
+    }
+    fn()
+  </script>-->
+
+  <!--<script>
+    function b(x, y, a) {
+      a = 8
+      arguments[2] = 10
+      console.log(a)
+    }
+    b(1, 2, 3)
+  </script>-->
+
+  <!--<script>
+    ;(function f(f) {
+      console.log(typeof f()) // number
+    })(function () {
+      return 1
+    })
+  </script>-->
+
+  <script>
+    var obj = {
+      value: 3,
+      fun: function () {
+        return this.value
+      },
+    }
+    function fun() {
+      console.log(this.fun) // f () { return this.value }
+      this.value = this.fun.apply(window) + '1'
+    }
+    fun.prototype = obj
+    var o = new fun()
+    console.log(o) // {value: "undefined1"}
+    console.log(o.value) // undefined1
+  </script>
+</html>

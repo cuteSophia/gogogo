@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" id="input1" />
+    <div id="div1"></div>
+  </body>
+  <script>
+    let input1 = document.getElementById('input1')
+    let div1 = document.getElementById('div1')
+    let data = {}
+
+    Object.defineProperty(data, 'value', {
+      get: function () {
+        // return input1.value
+      },
+      set: function (val) {
+        div1.innerHTML = val
+        // input1.value = val
+      },
+    })
+
+    input1.addEventListener(
+      'input',
+      debounce(function (event) {
+        data.value = event.target.value // 触发 set
+      }, 500)
+    )
+
+    function debounce(fn, delay) {
+      let timer = null
+      return function () {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          fn.apply(this, arguments)
+        }, delay)
+      }
+    }
+
+    function throttle(fn, delay) {
+      let flag = true
+      let timer = null
+      return function () {
+        if (!flag) return
+        flag = false
+        timer = setTimeout(() => {
+          fn.apply(this, arguments)
+          flag = true
+          clearTimeout(timer)
+        }, delay)
+      }
+    }
+  </script>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- initial-scale 初始缩放比例
+         maximum-scale 允许用户缩放的最大比例
+         minimum-scale 允许用户缩放的最小比例
+         user-scalable 是否允许用户缩放
+     -->
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    // this 就是函数在代码中被调用的位置
+    function f1() {
+      console.log('f1:', this) // window
+      function f2() {
+        console.log('f2:', this) // window
+      }
+      f2()
+    }
+    // f1()
+    let f3 = () => {
+      console.log('f3:', this) // window
+    }
+    // f3()
+    let obj = {
+      a: 1,
+      nfn: function () {
+        console.log(this) // obj
+      },
+      afn: () => {
+        console.log(this) // window
+      },
+      afn2: function () {
+        return () => {
+          console.log(this) // obj
+        }
+      },
+    }
+    // obj.nfn()
+    // obj.afn()
+    // obj.afn2()()
+  </script>
+</html>
