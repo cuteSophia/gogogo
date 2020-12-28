@@ -6,10 +6,10 @@
     <title>dropdown</title>
   </head>
   <body>
-    <my-button label="Click"></my-button>
+    <my-button label="Click Me" as-atom></my-button>
   </body>
   <script>
-    const template = document.createElement("template");
+    const template = document.createElement('template')
 
     template.innerHTML = `
       <style>
@@ -44,42 +44,58 @@
       <div class="container">
         <button>Label</button>
       </div>
-    `;
+    `
 
     class Button extends HTMLElement {
       constructor() {
-        super();
+        super()
 
-        this._shadowRoot = this.attachShadow({ mode: "open" });
-        this._shadowRoot.appendChild(template.content.cloneNode(true));
+        this._shadowRoot = this.attachShadow({ mode: 'open' })
+        this._shadowRoot.appendChild(template.content.cloneNode(true))
 
-        this.$button = this._shadowRoot.querySelector("button");
+        this.$container = this._shadowRoot.querySelector('.container')
+        this.$button = this._shadowRoot.querySelector('button')
+
+        this.$button.addEventListener('click', () => {
+          this.dispatchEvent(
+            new CustomEvent('onClick', {
+              detail: 'Hello from within the Custom Element',
+            })
+          )
+        })
+      }
+
+      connectedCallback() {
+        if (this.hasAttribute('as-atom')) {
+          this.$container.style.padding = '0px'
+        }
       }
 
       get label() {
-        return this.getAttribute("label");
+        return this.getAttribute('label')
       }
 
       set label(value) {
-        this.setAttribute("label", value);
+        this.setAttribute('label', value)
       }
 
       static get observedAttributes() {
-        return ["label"];
+        return ['label']
       }
 
       attributeChangedCallback(name, oldVal, newVal) {
-        this.render();
+        this.render()
       }
 
       render() {
-        this.$button.innerHTML = this.label;
+        this.$button.innerHTML = this.label
       }
     }
 
-    window.customElements.define("my-button", Button);
+    window.customElements.define('my-button', Button)
 
-    // const ele = document.querySelector("my-button");
-    // ele.label = "Click Me";
+    document
+      .querySelector('my-button')
+      .addEventListener('onClick', (value) => console.log(value))
   </script>
 </html>
