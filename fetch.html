@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fetch</title>
+  </head>
+  <body></body>
+  <script>
+    // async 返回一个 Promise 对象
+    getData()
+      .then((res) => {
+        console.log("result: ", res);
+      })
+      .catch(() => {});
+    async function getData() {
+      const url = "https://api.github.com/users/ruanyf";
+      try {
+        // response 是一个 Stream 对象
+        const response = await fetch(url, { method: "GET" });
+        if (response.ok) {
+          const json = await response.json();
+          return json;
+        } else {
+          throw new Error(response.statusText);
+        }
+      } catch (error) {
+        console.log("Request Failed ", err);
+      }
+    }
+  </script>
+</html>
