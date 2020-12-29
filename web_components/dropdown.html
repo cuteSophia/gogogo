@@ -6,10 +6,10 @@
     <title>dropdown</title>
   </head>
   <body>
-    <my-button label="Click Me" as-atom></my-button>
+    <my-dropdown label="Dropdown" option="option2"></my-dropdown>
   </body>
   <script>
-    const template = document.createElement('template')
+    const template = document.createElement("template");
 
     template.innerHTML = `
       <style>
@@ -44,58 +44,230 @@
       <div class="container">
         <button>Label</button>
       </div>
-    `
+    `;
 
     class Button extends HTMLElement {
       constructor() {
-        super()
+        super();
 
-        this._shadowRoot = this.attachShadow({ mode: 'open' })
-        this._shadowRoot.appendChild(template.content.cloneNode(true))
+        this._shadowRoot = this.attachShadow({ mode: "open" });
+        this._shadowRoot.appendChild(template.content.cloneNode(true));
 
-        this.$container = this._shadowRoot.querySelector('.container')
-        this.$button = this._shadowRoot.querySelector('button')
+        this.$container = this._shadowRoot.querySelector(".container");
+        this.$button = this._shadowRoot.querySelector("button");
 
-        this.$button.addEventListener('click', () => {
+        this.$button.addEventListener("click", () => {
           this.dispatchEvent(
-            new CustomEvent('onClick', {
-              detail: 'Hello from within the Custom Element',
+            new CustomEvent("onClick", {
+              detail: "Hello from within the Custom Element",
             })
-          )
-        })
+          );
+        });
       }
 
       connectedCallback() {
-        if (this.hasAttribute('as-atom')) {
-          this.$container.style.padding = '0px'
+        if (this.hasAttribute("as-atom")) {
+          this.$container.style.padding = "0px";
         }
       }
 
       get label() {
-        return this.getAttribute('label')
+        return this.getAttribute("label");
       }
 
       set label(value) {
-        this.setAttribute('label', value)
+        this.setAttribute("label", value);
       }
 
       static get observedAttributes() {
-        return ['label']
+        return ["label"];
       }
 
       attributeChangedCallback(name, oldVal, newVal) {
-        this.render()
+        this.render();
       }
 
       render() {
-        this.$button.innerHTML = this.label
+        this.$button.innerHTML = this.label;
       }
     }
 
-    window.customElements.define('my-button', Button)
+    window.customElements.define("my-button", Button);
+
+    // document
+    //   .querySelector("my-button")
+    //   .addEventListener("onClick", (value) => console.log(value));
+  </script>
+  <script>
+    const templateDropdown = document.createElement("template");
+
+    templateDropdown.innerHTML = `
+      <style>
+        :host {
+          font-family: sans-serif;
+        }
+    
+        .dropdown {
+          padding: 3px 8px 8px;
+        }
+    
+        .label {
+          display: block;
+          margin-bottom: 5px;
+          color: #000000;
+          font-size: 16px;
+          font-weight: normal;
+          line-height: 16px;
+        }
+    
+        .dropdown-list-container {
+          position: relative;
+        }
+    
+        .dropdown-list {
+          position: absolute;
+          width: 100%;
+          display: none;
+          max-height: 192px;
+          overflow-y: auto;
+          margin: 4px 0 0;
+          padding: 0;
+          background-color: #ffffff;
+          border: 1px solid #a1a1a1;
+          box-shadow: 0 2px 4px 0 rgba(0,0,0, 0.05), 0 2px 8px 0 rgba(161,161,161, 0.4);
+          list-style: none;
+        }
+    
+        .dropdown-list li {
+          display: flex;
+          align-items: center;
+          margin: 4px 0;
+          padding: 0 7px;
+          font-size: 16px;
+          height: 40px;
+          cursor: pointer;
+        }
+
+        .dropdown-list li.selected {
+          font-weight: 600;
+        }
+
+        .dropdown.open .dropdown-list {
+          display: flex;
+          flex-direction: column;
+        }
+      </style>
+  
+      <div class="dropdown">
+        <span class="label">Label</span>
+    
+        <my-button as-atom>Content</my-button>
+    
+        <div class="dropdown-list-container">
+          <ul class="dropdown-list"></ul>
+        </div>
+      </div>
+    `;
+
+    class Dropdown extends HTMLElement {
+      constructor() {
+        super();
+
+        this._sR = this.attachShadow({ mode: "open" });
+        this._sR.appendChild(templateDropdown.content.cloneNode(true));
+
+        this.open = false;
+
+        this.$label = this._sR.querySelector(".label");
+        this.$button = this._sR.querySelector("my-button");
+        this.$dropdown = this._sR.querySelector(".dropdown");
+        this.$dropdownList = this._sR.querySelector(".dropdown-list");
+
+        this.$button.addEventListener("onClick", this.toggleOpen.bind(this));
+      }
+
+      toggleOpen(event) {
+        this.open = !this.open;
+
+        this.open
+          ? this.$dropdown.classList.add("open")
+          : this.$dropdown.classList.remove("open");
+      }
+
+      static get observedAttributes() {
+        return ["label", "option", "options"];
+      }
+
+      get label() {
+        return this.getAttribute("label");
+      }
+
+      set label(value) {
+        this.setAttribute("label", value);
+      }
+
+      get option() {
+        return this.getAttribute("option");
+      }
+
+      set option(value) {
+        this.setAttribute("option", value);
+      }
+
+      get options() {
+        return JSON.parse(this.getAttribute("options"));
+      }
+
+      set options(value) {
+        this.setAttribute("options", JSON.stringify(value));
+      }
+
+      attributeChangedCallback(name, oldVal, newVal) {
+        this.render();
+      }
+
+      render() {
+        this.$label.innerHTML = this.label;
+
+        if (this.options) {
+          this.$button.setAttribute("label", this.options[this.option].label);
+        }
+
+        this.$dropdownList.innerHTML = "";
+
+        Object.keys(this.options || {}).forEach((key) => {
+          let option = this.options[key];
+          let $option = document.createElement("li");
+          $option.innerHTML = option.label;
+
+          if (this.option && this.option === key) {
+            $option.classList.add("selected");
+          }
+
+          $option.addEventListener("click", () => {
+            this.option = key;
+
+            this.toggleOpen();
+
+            this.dispatchEvent(new CustomEvent("onChange", { detail: key }));
+
+            this.render();
+          });
+
+          this.$dropdownList.appendChild($option);
+        });
+      }
+    }
+
+    window.customElements.define("my-dropdown", Dropdown);
+
+    document.querySelector("my-dropdown").options = {
+      option1: { label: "Option 1" },
+      option2: { label: "Option 2" },
+    };
 
     document
-      .querySelector('my-button')
-      .addEventListener('onClick', (value) => console.log(value))
+      .querySelector("my-dropdown")
+      .addEventListener("onChange", (event) => console.log(event.detail));
   </script>
 </html>
