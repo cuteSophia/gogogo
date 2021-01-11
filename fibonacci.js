@@ -8,8 +8,8 @@
  * 尾递归，就是指函数的最后一步是调用本身
  */
 function getFibonacci(n, prev = 0, cur = 1) {
-  if (n <= 1) return cur
-  return getFibonacci(n - 1, cur, prev + cur)
+  if (n <= 1) return cur;
+  return getFibonacci(n - 1, cur, prev + cur);
 }
 // console.log(getFibonacci(20))
 // 5 0 1
@@ -23,26 +23,41 @@ function getFibonacci(n, prev = 0, cur = 1) {
  * 该方法会导致50以上卡死，性能非常差
  */
 function getFibonacci2(n) {
-  if (n === 0 || n === 1) return n
+  if (n === 0 || n === 1) return n;
   if (n > 1) {
-    return getFibonacci2(n - 1) + getFibonacci2(n - 2)
+    return getFibonacci2(n - 1) + getFibonacci2(n - 2);
   }
 }
-console.log(getFibonacci2(20))
+// console.log(getFibonacci2(20))
 
 /**
  * 列出20个斐波那契数列
  */
 function fibonacci(n) {
-  let arr = []
+  let arr = [];
 
   function fibo(n, prev = 0, cur = 1) {
-    arr.push(cur)
-    if (n <= 1) return cur
-    return fibo(n - 1, cur, prev + cur)
+    arr.push(cur);
+    if (n <= 1) return cur;
+    return fibo(n - 1, cur, prev + cur);
   }
-  fibo(n)
+  fibo(n);
 
-  return arr
+  return arr;
 }
-console.log(fibonacci(20))
+// console.log(fibonacci(20))
+
+/**
+ * 使用 Generator 函数和 for...of 循环，实现斐波那契数列
+ */
+function* genFibonacci() {
+  let [prev, curr] = [0, 1];
+  for (;;) {
+    yield curr;
+    [prev, curr] = [curr, prev + curr];
+  }
+}
+for (let n of genFibonacci()) {
+  if (n > 100) break;
+  console.log(n); // 打印 100 以内的斐波那契数
+}
