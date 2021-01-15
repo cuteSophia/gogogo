@@ -71,6 +71,9 @@ for (let [key, value] of objectEntries(jane)) {
   // console.log(`${key}: ${value}`);
 }
 
+/**
+ * 相当于增加了遍历属性，使得函数可以被遍历
+ */
 function* numbers() {
   yield 1;
   yield 2;
