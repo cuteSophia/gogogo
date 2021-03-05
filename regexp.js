@@ -36,3 +36,10 @@ console.log(isID)
 // 是否是手机号
 const isPhone = /^1[34578]\d{9}$/g.test('11701702779')
 // console.log(isPhone)
+
+// 格式化只能输入18位字母和数字
+function skuFormat(value) {
+	let _value = value.replace(/[^A-Za-z0-9]/g, ''); // 清除数字和字母以外的字符
+	_value = _value.substring(0, 18);
+	return _value;
+}
